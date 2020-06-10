@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+	<head></head>
+	<style type="text/css">
+		html,
+		body {
+			/* height: 100vh;
+			width: 100%;
+			background-color: red;
+			position: relative;
+			z-index: 9999; */
+		}
+	</style>
+	<body>
+		<p>index1231231233333hhhh</p>
+		<button id="t">123</button>
+		<!-- uni 的 SDK -->
+		<script type="text/javascript" src="./js/uni.webview.js"></script>
+		<script>
+			document.addEventListener('UniAppJSBridgeReady', function() {
+				uni.postMessage({
+					data: {
+						param: 'hybrid'
+					}
+				})
+				document.querySelector('#t').addEventListener('click', function(evt) {
+					var target = evt.target;
+					if (target.tagName === 'BUTTON') {
+						var action = target.getAttribute('data-action');
+						uni.switchTab({
+							url: '../../pages/circle/circle'
+						})
+					}
+				})
+				uni.getEnv(function(res) {
+					console.log('当前环境：' + JSON.stringify(res));
+				});
+			})
+		</script>
+	</body>
+</html>

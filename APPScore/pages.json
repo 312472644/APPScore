@@ -9,14 +9,60 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationStyle": "custom",
+				"onReachBottomDistance": 60
+			}
+		}, {
+			"path": "pages/circle/circle",
+			"style": {}
+		}, {
+			"path": "pages/official/official",
+			"style": {}
+		}, {
+			"path": "pages/mine/mine",
+			"style": {}
+		}, {
+			"path": "pages/guide/guide",
+			"style": {
+				"navigationStyle": "custom"
 			}
 		}
 	],
+	"condition": {
+		"current": 1,
+		"list": [{
+			"name": "index",
+			"path": "pages/index/index"
+		}]
+	},
+	"tabBar": {
+		"color": "#999",
+		"selectedColor": "#3A82F8",
+		"backgroundColor": "#FFFFFF",
+		"list": [{
+			"iconPath": "./static/images/index.png",
+			"selectedIconPath": "./static/images/index_active.png",
+			"pagePath": "pages/index/index",
+			"text": "主页"
+		}, {
+			"iconPath": "./static/images/circle.png",
+			"selectedIconPath": "./static/images/circle_active.png",
+			"pagePath": "pages/circle/circle",
+			"text": "广场"
+		}, {
+			"iconPath": "./static/images/official.png",
+			"selectedIconPath": "./static/images/official_active.png",
+			"pagePath": "pages/official/official",
+			"text": "官方"
+		}, {
+			"iconPath": "./static/images/mine.png",
+			"selectedIconPath": "./static/images/mine_active.png",
+			"pagePath": "pages/mine/mine",
+			"text": "我"
+		}]
+	},
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarTextStyle": "black"
 	},
 	"easycom": {
 		"autoscan": true

@@ -33,12 +33,12 @@ export default {
 		};
 	},
 	created() {
-		this.visible = !uni.getStorageSync('agree');
+		this.visible = !uni.getStorageSync('isAgree');
 	},
 	methods: {
 		agree() {
 			this.visible = false;
-			uni.setStorageSync('agree', true);
+			uni.setStorageSync('isAgree', true);
 			this.$emit('agree', true);
 		},
 		disagree() {

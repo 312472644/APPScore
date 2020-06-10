@@ -1,10 +1,5 @@
 <template>
-	<view class="start-up">
-		<view class="time-box" @tap="toIndex">
-			<view>跳过 {{ duration }}s</view>
-		</view>
-		<agreement @agree="agree"></agreement>
-	</view>
+	<view class="start-up"><agreement @agree="agree"></agreement></view>
 </template>
 
 <script>
@@ -13,37 +8,44 @@ export default {
 		return {
 			duration: 3,
 			isStartUp: false,
-			interval: {}
+			timeOut: {}
 		};
 	},
 	onLoad() {
 		this.startUp();
 	},
 	methods: {
-		agree(value) {
-			this.isStartUp = value;
+		agree() {
 			this.startUp();
 		},
 		startUp() {
-			let isAgree = uni.getStorageSync('agree');
-			if (!this.isStartUp && !isAgree) {
+			const isAgree = uni.getStorageSync('isAgree');
+			if (!isAgree) {
 				return false;
 			}
-			this.interval = setInterval(() => {
-				this.duration--;
-				if (this.duration <= 0) {
-					this.toIndex();
-				}
+			this.timeOut = setTimeout(() => {
+				this.toIndex();
 			}, 1000);
 		},
+		//首次启动加载guide页
 		toIndex() {
 			const _this = this;
-			uni.switchTab({
-				url: '/pages/index/index',
-				success: function() {
-					clearInterval(_this.interval);
-				}
-			});
+			const isGuide = uni.getStorageSync('isGuide');
+			if (isGuide) {
+				uni.switchTab({
+					url: '/pages/index/index',
+					success: function() {
+						clearInterval(_this.timeOut);
+					}
+				});
+			} else {
+				uni.redirectTo({
+					url: '/pages/guide/guide',
+					success: function() {
+						clearInterval(_this.timeOut);
+					}
+				});
+			}
 		}
 	}
 };
@@ -51,7 +53,7 @@ export default {
 
 <style lang="scss">
 .start-up {
-	background: url(../../static/images/startup.png) no-repeat;
+	background: url(../../static/images/startup.jpg) no-repeat;
 	background-size: 100% 100%;
 	height: 100vh;
 	.time-box {
