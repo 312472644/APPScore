@@ -35,7 +35,13 @@
 		</scroll-view>
 		<!--帖子信息-->
 		<view class="article-list">
-			<view class="article-item" v-for="item in articleList" :key="item.article_id">
+			<navigator
+				:url="'/pages/articledetail/articledetail?article_id=' + item.object_id"
+				open-type="navigate"
+				class="article-item"
+				v-for="item in articleList"
+				:key="item.article_id"
+			>
 				<view class="article-info">
 					<view class="title">
 						<text v-if="item.is_top == 1" class="hot">置顶</text>
@@ -50,7 +56,7 @@
 					</view>
 				</view>
 				<view class="article-image"><image :src="item.picture_list[0]"></image></view>
-			</view>
+			</navigator>
 		</view>
 		<view class="load-more" v-show="loading"><text>加载中...</text></view>
 	</view>
@@ -63,14 +69,19 @@ export default {
 			matchList: [],
 			articleList: [],
 			currentPage: 1,
-			loading: false
+			loading: false,
+			url: '/pages/articledetail/articledetail/'
 		};
 	},
 	created() {
 		this.getMatchList();
 		this.getArticleList();
-		this.bus.$on('recommand', () => {
-			this.currentPage++;
+		this.bus.$on('recommand', type => {
+			if (type == 'pull') {
+				this.getArticleList(type);
+			} else {
+				this.currentPage++;
+			}
 			this.getArticleList();
 		});
 	},
@@ -109,7 +120,7 @@ export default {
 			return result;
 		},
 		//获取文章信息
-		getArticleList() {
+		getArticleList(type) {
 			this.loading = true;
 			uni.request({
 				url: 'https://api-v2.scoregg.com/services/cms/article_list.php',
@@ -120,6 +131,10 @@ export default {
 				}),
 				complete: () => {
 					setTimeout(() => {
+						//下拉刷新
+						if (type == 'pull') {
+							uni.stopPullDownRefresh();
+						}
 						this.loading = false;
 					}, 1000);
 				},
@@ -325,7 +340,7 @@ $match-height: 125px;
 			}
 			.article-image {
 				image {
-					width: 130px;
+					width: 140px;
 					height: $height;
 					border-radius: 5px;
 				}

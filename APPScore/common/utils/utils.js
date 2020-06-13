@@ -30,6 +30,7 @@ const utils = {
 		param.sign = md5(md5(encryString).toUpperCase()).toUpperCase();
 		return param;
 	},
+	//中央通信
 	bus() {
 		return new vue();
 	}

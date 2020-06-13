@@ -10,14 +10,17 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
 				"onReachBottomDistance": 60
 			}
 		}, {
 			"path": "pages/circle/circle",
 			"style": {}
 		}, {
-			"path": "pages/official/official",
-			"style": {}
+			"path": "pages/match/match",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}, {
 			"path": "pages/mine/mine",
 			"style": {}
@@ -25,6 +28,12 @@
 			"path": "pages/guide/guide",
 			"style": {
 				"navigationStyle": "custom"
+			}
+		}, {
+			"path": "pages/articledetail/articledetail",
+			"style": {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true
 			}
 		}
 	],
@@ -52,8 +61,8 @@
 		}, {
 			"iconPath": "./static/images/official.png",
 			"selectedIconPath": "./static/images/official_active.png",
-			"pagePath": "pages/official/official",
-			"text": "官方"
+			"pagePath": "pages/match/match",
+			"text": "赛事"
 		}, {
 			"iconPath": "./static/images/mine.png",
 			"selectedIconPath": "./static/images/mine_active.png",

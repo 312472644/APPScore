@@ -4,7 +4,7 @@ export default {
 	onShow: function() {},
 	onHide: function() {},
 	onError: function(error) {
-		console.log('error', error);
+		console.log('error', error,'color:red');
 	}
 };
 </script>
