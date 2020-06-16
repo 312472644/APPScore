@@ -47,6 +47,8 @@
 		width: 100%;
 		background-color: #ffffff;
 		z-index: 99;
+		// position: relative;
+		padding-top: $tabar-padding-top;
 		.tab-menu {
 			display: flex;
 			align-items: center;
@@ -78,7 +80,7 @@
 		}
 	}
 	.tab-content {
-		padding-top: 60px;
+		padding-top: 80px;
 	}
 }
 uni-button[type='default'],

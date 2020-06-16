@@ -1,6 +1,6 @@
 <template>
 	<view class="article-detail">
-		<topnavigation><image class="logo" src="../../static/images/score.png"></image></topnavigation>
+		<topnavigation></topnavigation>
 		<view class="content" v-html="articleHTML"></view>
 		<view class="split-line"></view>
 		<view class="god-comments-box">
@@ -49,6 +49,7 @@
 				</view>
 			</view>
 		</view>
+		<loading ref="load" :top="0" :bottom="0"></loading>
 	</view>
 </template>
 
@@ -81,9 +82,7 @@ export default {
 	methods: {
 		// 获取文章详情
 		getArticleDetail() {
-			this.$load.showLoad({
-				bottom: 0
-			});
+			this.$refs.load.showLoading();
 			uni.request({
 				url: ` https://www.scoregg.com/p/${this.articleId}`,
 				success: res => {
@@ -100,7 +99,7 @@ export default {
 				},
 				complete: () => {
 					setTimeout(() => {
-						this.$load.hideLoad();
+						this.$refs.load.hideLoading();
 					}, 1000);
 				}
 			});
@@ -111,14 +110,8 @@ export default {
 
 <style lang="scss">
 .article-detail {
-	.logo {
-		width: 80px;
-		height: 36px;
-		vertical-align: bottom;
-		margin: 0 auto;
-	}
 	.content {
-		padding-top: 50px;
+		padding-top: 80px;
 	}
 	.split-line {
 		background-color: #f5f6f7;

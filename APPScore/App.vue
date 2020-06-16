@@ -4,11 +4,11 @@ export default {
 	onShow: function() {},
 	onHide: function() {},
 	onError: function(error) {
-		console.log('error', error,'color:red');
+		console.log('error', error);
 	}
 };
 </script>
 
 <style lang="scss">
-@import './common/style/common.scss'
+@import './common/style/common.scss';
 </style>

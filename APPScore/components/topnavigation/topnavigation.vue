@@ -1,7 +1,9 @@
 <template>
 	<view class="top-navigation">
-		<view class="go-back" @tap="goBack"><image src="../../static/images/back.png"></image></view>
-		<view class="content"><slot></slot></view>
+		<view class="go-back-box" @tap="goBack">
+			<view class="go-back"><image src="../../static/images/back.png"></image></view>
+			<view class="logo"><image src="../../static/images/score.png"></image></view>
+		</view>
 	</view>
 </template>
 
@@ -22,29 +24,37 @@ export default {
 
 <style lang="scss">
 .top-navigation {
-	height: 50px;
+	padding-top: $tabar-padding-top;
 	border-bottom: 1px solid #f1f1f1f1;
 	width: 100%;
 	background-color: #fff;
 	z-index: 999;
 	position: fixed;
-	.go-back {
-		float: left;
-		margin-left: 10px;
-		height: inherit;
-		display: flex;
-		align-items: center;
-		width: 28px;
+	top: 0;
+	.go-back-box {
+		.go-back {
+			margin-left: 10px;
+			height: 50px;
+			display: flex;
+			align-items: center;
+			width: 28px;
+			float: left;
+		}
 		image {
 			width: inherit;
 			height: 28px;
 			vertical-align: bottom;
 		}
-	}
-	.content {
-		height: inherit;
-		display: flex;
-		align-items: center;
+		.logo {
+			width: 80px;
+			height: 50px;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			image{
+				height: 35px;
+			}
+		}
 	}
 }
 </style>

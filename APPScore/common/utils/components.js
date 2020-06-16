@@ -6,6 +6,7 @@ vue.prototype.$load = {
 	_loadObject: '',
 	//加载loading
 	showLoad(propsData) {
+		debugger
 		let extendLoad = vue.extend(loading);
 		let load = new extendLoad({
 			propsData: propsData

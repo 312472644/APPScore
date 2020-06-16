@@ -41,6 +41,8 @@ Date.prototype.GetWeek = function() {
 		case "0":
 			text = '周日';
 			break;
+		default:
+			break;
 	}
 	return text;
 }

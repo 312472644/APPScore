@@ -1,5 +1,5 @@
 <template>
-	<view class="load-box" id="load" :style="getStyle">
+	<view class="load-box" id="load" v-if="load" :style="getStyle">
 		<image class="image-load" src="../../static/images/loading-out.svg"></image>
 		<text>{{ loadText }}</text>
 	</view>
@@ -26,11 +26,21 @@ export default {
 		}
 	},
 	data() {
-		return {};
+		return {
+			load: false
+		};
 	},
 	computed: {
 		getStyle() {
 			return `top:${this.top}px;bottom:${this.bottom}px;background:${this.bgColor}`;
+		}
+	},
+	methods: {
+		showLoading() {
+			this.load = true;
+		},
+		hideLoading() {
+			this.load = false;
 		}
 	}
 };

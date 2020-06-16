@@ -246,7 +246,8 @@ $match-height: 125px;
 					border-radius: 30px;
 					text-align: center;
 					color: #999;
-					padding: 5px 0;
+					height: 25px;
+					line-height: 25px;
 					font-size: 13px;
 					background-color: #f7f8fa;
 				}

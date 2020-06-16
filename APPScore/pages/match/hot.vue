@@ -47,7 +47,7 @@
 							</view>
 							<text class="vs" v-else>VS</text>
 							<image class="filter-image" :src="team.team_b_image"></image>
-							<text class="team-name">{{ team.team_b_short_name }}</text>
+							<text class="team-name align-left">{{ team.team_b_short_name }}</text>
 						</view>
 					</view>
 				</view>
@@ -162,8 +162,8 @@ export default {
 					let matchList = [];
 					for (let dateProp in matchResult) {
 						let obj = {};
-						let date = new Date(dateProp);
-
+						//需要转化日期(2020.6.14转化2020-06-14)
+						let date = new Date(dateProp.toString().replace(/\./g,'-'));
 						obj.matchDateValue = date.Format('yyyy-MM-dd');
 						obj.matchDateText = date.Format('MM.dd');
 						obj.week = date.GetWeek();
@@ -179,6 +179,7 @@ export default {
 						matchList.push(obj);
 					}
 					this.matchList = matchList;
+					//console.debug('matchList', matchList);
 					this.showFilterMode();
 				}
 			});
@@ -192,7 +193,6 @@ export default {
 	.filter-image {
 		width: 25px;
 		height: 25px;
-		vertical-align: middle;
 	}
 	.match-type-dialog {
 		position: fixed;
@@ -203,11 +203,21 @@ export default {
 		z-index: 999;
 		.head {
 			height: 60px;
-			line-height: 60px;
-			text-align: center;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			font-size: 15px;
 			color: #666;
-			padding-right: 10px;
+			position: relative;
+			padding-top: $tabar-padding-top;
+			.fr {
+				position: absolute;
+				right: 10px;
+				top: 50%;
+				transform: translateY(-50%);
+				line-height: 0;
+				padding-top: $tabar-padding-top;
+			}
 		}
 		.body {
 			height: calc(100% - 120px);
@@ -256,7 +266,6 @@ export default {
 			.match-date {
 				font-size: 20px;
 				font-weight: bolder;
-				padding-bottom: 10px;
 				.week {
 					font-size: 14px;
 					color: #666;
@@ -282,7 +291,11 @@ export default {
 				font-size: 14px;
 				color: #666;
 				padding-bottom: 8px;
+				height: 25px;
 				text {
+					display: inline-block;
+					height: inherit;
+					line-height: 25px;
 					padding-left: 5px;
 				}
 			}
@@ -293,6 +306,7 @@ export default {
 					align-items: center;
 					padding: 15px;
 					font-size: 14px;
+					line-height: 26px;
 					&:last-of-type {
 						border-bottom: 1px solid #f1f1f1;
 					}
@@ -318,13 +332,17 @@ export default {
 						.team-name {
 							margin: 0 8px;
 							font-weight: bold;
+							width: 50px;
+							text-align: right;
+							overflow: hidden;
+							white-space: nowrap;
 						}
 						.match-result {
 							display: inline-block;
-							margin: 0 20px;
+							margin: 0 15px;
 							font-weight: bold;
 							.win {
-								color: #0d8dfc;
+								color: #f2dbb3;
 							}
 							.lose {
 								color: #a8abb3;
@@ -332,6 +350,9 @@ export default {
 							.character {
 								padding: 0 5px;
 							}
+						}
+						.align-left {
+							text-align: left;
 						}
 					}
 				}
