@@ -1,5 +1,6 @@
 <template>
-	<view class="team-box">
+	<view class="team-box table-defined" :style="'height:' + totalHeight + 'px'">
+		<!--固定的表头-->
 		<view class="fixed-table-head">
 			<view class="fiexed-head-item rank">排名</view>
 			<view class="fiexed-head-item team">队伍</view>
@@ -26,8 +27,8 @@
 			<view class="head-item">场均大龙</view>
 			<view class="head-item">大龙控制率</view>
 		</view>
-		<scroll-view class="table" scroll-x="true" @scroll="scrollHead">
-			<view class="table-content" v-for="item in gamingDatabaseList" :key="item.id">
+		<scroll-view class="table" scroll-x="true" @scroll="scrollHead" :style="'height:' + totalHeight + 'px'">
+			<view class="table-content" @tap="goTeamDetail(item)" v-for="item in gamingDatabaseList" :key="item.id">
 				<view class="content-item">{{ item.MACTH_TIMES }}</view>
 				<view class="content-item win-rate">
 					<view class="victory">
@@ -63,9 +64,14 @@
 			</view>
 		</scroll-view>
 		<!--左边固定的列名-->
-		<view class="fixed-table">
+		<view class="fixed-table" :style="'height:' + totalHeight + 'px'">
 			<view class="fixed-table-content" v-for="(item, index) in gamingDatabaseList" :key="item.id">
-				<view class="fixed-content-item rank">{{ index + 1 }}</view>
+				<view class="fixed-content-item rank">
+					<text v-if="index == 0" class="first">{{ index + 1 }}</text>
+					<text v-else-if="index == 1" class="second">{{ index + 1 }}</text>
+					<text v-else-if="index == 2" class="third">{{ index + 1 }}</text>
+					<text v-else>{{ index + 1 }}</text>
+				</view>
 				<view class="fixed-content-item team">
 					<image :src="item.team_image"></image>
 					<text>{{ item.team_name }}</text>
@@ -76,20 +82,46 @@
 </template>
 <script>
 export default {
+	props: {
+		tournamentID: {
+			type: String
+		},
+		tabName: {
+			type: String
+		}
+	},
 	data() {
 		return {
 			scrollTop: 0,
 			headLeft: 0,
+			totalHeight: 'auto',
+			pulldown: '',
 			gamingDatabaseList: []
 		};
 	},
-	created() {
-		this.getGamingDatabase();
+	watch: {
+		tournamentID: {
+			handler(newValue, oldValue) {
+				if (newValue) {
+					this.getGamingDatabase();
+				}
+			},
+			immediate: true
+		}
 	},
 	computed: {
 		getLeft() {
 			return `transform:translateX(-${this.headLeft}px)`;
 		}
+	},
+	created() {
+		this.bus.$on('team', value => {
+			this.pulldown = value;
+			this.getGamingDatabase();
+		});
+	},
+	beforeDestroy() {
+		this.bus.$off('team');
 	},
 	methods: {
 		getGamingDatabase() {
@@ -105,7 +137,7 @@ export default {
 					platform: 'web',
 					api_version: '9.9.9',
 					language_id: 1,
-					tournament_id: 172,
+					tournament_id: this.tournamentID,
 					type: 'team',
 					order_type: 'KDA',
 					order_value: 'DESC',
@@ -116,162 +148,27 @@ export default {
 				},
 				success: res => {
 					this.gamingDatabaseList = res.data.data.data.list;
+					this.totalHeight = (this.gamingDatabaseList.length + 1) * 51;
+				},
+				complete: () => {
+					if (this.pulldown) {
+						this.pulldown.stopLoad();
+					}
 				}
 			});
 		},
 		scrollHead(e) {
 			let detail = e.detail;
 			this.headLeft = detail.scrollLeft;
+		},
+		goTeamDetail(row) {
+			console.log(row);
+			uni.navigateTo({
+				url: '/pages/match/teamdetail/teamdetail?teamID=' + row.team_id + ''
+			});
 		}
 	}
 };
 </script>
 
-<style lang="scss" scoped>
-$height: 50px;
-@mixin td {
-	display: inline-block;
-	vertical-align: middle;
-	width: 100px;
-	height: $height;
-	line-height: $height;
-	font-size: 13px;
-	text-align: center;
-	color: #666;
-	border-bottom: 1px solid #f1f1f1;
-}
-@mixin head {
-	white-space: nowrap;
-	position: sticky;
-	top: 80px;
-	background: #fff;
-}
-.team-box {
-	position: relative;
-	height: 1200px;
-	.table-head {
-		margin-left: 141px;
-		z-index: 998;
-		width: 2000px;
-		@include head;
-		.head-item {
-			border-top: 1px solid #f1f1f1;
-			@include td;
-		}
-	}
-	.fixed-table-head {
-		z-index: 999;
-		width: 141px;
-		float: left;
-		border-top: 1px solid #f1f1f1;
-		@include head;
-		.fiexed-head-item {
-			@include td;
-		}
-	}
-	.rank {
-		width: 60px !important;
-		text-align: center !important;
-	}
-	.team {
-		width: 80px !important;
-		border-right: 1px solid #f1f1f1;
-	}
-	.table {
-		white-space: nowrap;
-		margin-left: 141px;
-		width: calc(100% - 141px);
-		position: absolute;
-		top: 0;
-		.table-content {
-			&:nth-of-type(1) {
-				.content-item {
-					margin-top: 52px;
-				}
-			}
-			.content-item {
-				@include td;
-				&.win-rate {
-					line-height: normal !important;
-				}
-				.victory {
-					height: $height;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					justify-content: center;
-					.bar {
-						width: 80px;
-						height: 8px;
-						margin-top: 3px;
-						.full {
-							height: inherit;
-							background-color: #e3e5e6;
-							border-radius: 30px;
-							position: relative;
-							border-radius: 30px;
-						}
-						.win {
-							width: 30%;
-							height: inherit;
-							background: #0c9dfc;
-							height: inherit;
-							border-radius: 30px;
-						}
-					}
-				}
-				.kda-box {
-					height: $height;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					justify-content: center;
-					.value {
-						color: #0c9dfc;
-					}
-					.detail {
-						color: #999fad;
-						font-size: 12px;
-					}
-				}
-			}
-			&:nth-of-type(2n + 1) {
-				.content-item {
-					background-color: #fafbfc;
-				}
-			}
-		}
-	}
-	.fixed-table {
-		position: absolute;
-		top: 0px;
-		width: 141px;
-		box-sizing: border-box;
-		.fixed-table-content {
-			&:nth-of-type(1) {
-				.fixed-content-item {
-					margin-top: 52px;
-				}
-			}
-			&:nth-of-type(2n + 1) {
-				.fixed-content-item {
-					background-color: #fafbfc;
-				}
-			}
-			.fixed-content-item {
-				@include td;
-				text-align: left;
-				image {
-					width: 25px;
-					height: 25px;
-					vertical-align: middle;
-					padding-right: 5px;
-				}
-				text {
-					vertical-align: middle;
-				}
-			}
-		}
-	}
-}
-</style>
+<style lang="scss" scoped></style>

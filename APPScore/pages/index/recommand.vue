@@ -191,7 +191,7 @@ $match-height: 125px;
 				line-height: 55px;
 				.count {
 					color: #656973;
-					font-size: 1.5rem;
+					font-size: 25px;
 					font-weight: bolder;
 				}
 				.tips {
@@ -210,7 +210,7 @@ $match-height: 125px;
 				text {
 					text-align: center;
 					width: 100%;
-					font-size: 15px;
+					font-size: 13px;
 					color: #696c73;
 					line-height: 35px;
 					&:nth-of-type(n + 2) {
@@ -300,7 +300,7 @@ $match-height: 125px;
 		}
 	}
 	.article-list {
-		$height: 100px;
+		$height: 80px;
 		.article-item {
 			padding: 15px;
 			height: $height;
@@ -314,7 +314,7 @@ $match-height: 125px;
 				justify-content: space-between;
 				padding-right: 20px;
 				.title {
-					font-size: 18px;
+					font-size: 16px;
 					font-weight: bolder;
 					word-break: break-all;
 					color: #333;
@@ -333,7 +333,7 @@ $match-height: 125px;
 					}
 				}
 				.article-author {
-					font-size: 13px;
+					font-size: 12px;
 					color: #aaacb4;
 					display: flex;
 					justify-content: space-between;

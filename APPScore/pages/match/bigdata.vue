@@ -1,23 +1,25 @@
 <template>
 	<view class="big-data">
-		<view class="query-box">
-			<picker mode="selector" class="uni-select" range-key="name" @change="bindPickerChange" :value="index" :range="tournamentList">
-				<view class="select-content">
-					<text>{{ tournamentList.length && tournamentList[index].name }}</text>
-					<view class="down"></view>
+		<pulldown ref="pulldown" @pull="pulldown">
+			<view class="query-box">
+				<picker mode="selector" class="uni-select" range-key="name" @change="bindPickerChange" :value="index" :range="tournamentList">
+					<view class="select-content">
+						<text>{{ tournamentList.length && tournamentList[index].name }}</text>
+						<view class="down"></view>
+					</view>
+				</picker>
+				<view class="menu">
+					<view :class="{ 'menu-item': true, active: tabActiveName == 'team' }" @tap="tapHandler('team')"><text>战队榜</text></view>
+					<view :class="{ 'menu-item': true, active: tabActiveName == 'player' }" @tap="tapHandler('player')"><text>选手榜</text></view>
+					<view :class="{ 'menu-item': true, active: tabActiveName == 'hero' }" @tap="tapHandler('hero')"><text>英雄榜</text></view>
 				</view>
-			</picker>
-			<view class="menu">
-				<view :class="{ 'menu-item': true, active: tabActiveName == 'team' }" @tap="tapHandler('team')"><text>战队榜</text></view>
-				<view :class="{ 'menu-item': true, active: tabActiveName == 'player' }" @tap="tapHandler('player')"><text>选手榜</text></view>
-				<view :class="{ 'menu-item': true, active: tabActiveName == 'hero' }" @tap="tapHandler('hero')"><text>英雄榜</text></view>
 			</view>
-		</view>
-		<view class="menu-content">
-			<team v-if="tabActiveName == 'team'"></team>
-			<player v-if="tabActiveName == 'player'"></player>
-			<hero v-if="tabActiveName == 'hero'"></hero>
-		</view>
+			<view class="menu-content">
+				<team v-if="tabActiveName == 'team'" :tournamentID="tournamentID" :tabName="tabActiveName"></team>
+				<player v-if="tabActiveName == 'player'" :tournamentID="tournamentID" :tabName="tabActiveName"></player>
+				<hero v-if="tabActiveName == 'hero'" :tournamentID="tournamentID" :tabName="tabActiveName"></hero>
+			</view>
+		</pulldown>
 	</view>
 </template>
 
@@ -35,7 +37,8 @@ export default {
 		return {
 			tournamentList: [],
 			index: 0,
-			tabActiveName: 'team'
+			tabActiveName: 'team',
+			tournamentID: ''
 		};
 	},
 	created() {
@@ -44,6 +47,7 @@ export default {
 	methods: {
 		bindPickerChange(e) {
 			this.index = e.target.value;
+			this.tournamentID = this.tournamentList[this.index].tournamentID;
 		},
 		getTournamentList() {
 			uni.request({
@@ -62,11 +66,16 @@ export default {
 				},
 				success: res => {
 					this.tournamentList = res.data.data.list;
+					this.tournamentID = res.data.data.current_tournament.tournamentID;
 				}
 			});
 		},
 		tapHandler(name) {
 			this.tabActiveName = name;
+		},
+		pulldown() {
+			console.log(this.tabActiveName);
+			this.bus.$emit(this.tabActiveName, this.$refs.pulldown);
 		}
 	}
 };
@@ -90,7 +99,7 @@ export default {
 				align-items: center;
 				justify-content: space-between;
 				.down {
-					background: url(../../static/images/more_unfold.png) no-repeat;
+					background: url(../../static/images/more_unfold.svg) no-repeat;
 					width: 20px;
 					height: 20px;
 					background-size: 100% 100%;

@@ -1,14 +1,21 @@
 <template>
 	<view class="top-navigation">
 		<view class="go-back-box" @tap="goBack">
-			<view class="go-back"><image src="../../static/images/back.png"></image></view>
-			<view class="logo"><image src="../../static/images/score.png"></image></view>
+			<view class="go-back"><image src="../../static/images/back.svg"></image></view>
+			<view class="logo" v-if="isLogo"><image src="../../static/images/score.png"></image></view>
+			<slot></slot>
 		</view>
 	</view>
 </template>
 
 <script>
 export default {
+	props: {
+		isLogo: {
+			type: Boolean,
+			default: true
+		}
+	},
 	data() {
 		return {};
 	},
@@ -51,7 +58,7 @@ export default {
 			margin: 0 auto;
 			display: flex;
 			align-items: center;
-			image{
+			image {
 				height: 35px;
 			}
 		}

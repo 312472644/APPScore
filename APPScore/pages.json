@@ -35,6 +35,11 @@
 				"navigationStyle": "custom",
 				"enablePullDownRefresh": true
 			}
+		}, {
+			"path": "pages/match/teamdetail/teamdetail",
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"condition": {

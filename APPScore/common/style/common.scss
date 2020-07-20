@@ -36,6 +36,7 @@
 		font-size: 16px;
 	}
 }
+//选项卡
 .tab {
 	.tab-head {
 		display: flex;
@@ -47,7 +48,6 @@
 		width: 100%;
 		background-color: #ffffff;
 		z-index: 99;
-		// position: relative;
 		padding-top: $tabar-padding-top;
 		.tab-menu {
 			display: flex;
@@ -81,6 +81,176 @@
 	}
 	.tab-content {
 		padding-top: 80px;
+	}
+}
+//自定义表格
+$height: 50px;
+@mixin td {
+	display: inline-block;
+	vertical-align: middle;
+	width: 100px;
+	height: $height;
+	line-height: $height;
+	font-size: 13px;
+	text-align: center;
+	color: #666;
+	border-bottom: 1px solid #f1f1f1;
+	position: relative;
+}
+@mixin head {
+	white-space: nowrap;
+	position: sticky;
+	top: 80px;
+	background: #fff;
+}
+.table-defined {
+	position: relative;
+	.first {
+		color: #fff;
+		background: linear-gradient(39deg, #fa0, #ffd500 99%);
+		box-shadow: 0 2px 6px 0 rgba(255, 179, 0, 0.4);
+		padding: 2px 6px;
+		border-radius: 3px;
+	}
+	.second {
+		color: #fff;
+		background: linear-gradient(39deg, #bcc1cc, #dadde3 99%);
+		box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.12);
+		padding: 2px 6px;
+		border-radius: 3px;
+	}
+	.third {
+		color: #fff;
+		background: linear-gradient(39deg, #ff9a57, #ffbb80 99%);
+		box-shadow: 0 2px 6px 0 rgba(255, 154, 87, 0.4);
+		padding: 2px 6px;
+		border-radius: 3px;
+	}
+	.table-head {
+		margin-left: 141px;
+		z-index: 998;
+		width: 2000px;
+		@include head;
+		.head-item {
+			border-top: 1px solid #f1f1f1;
+			@include td;
+		}
+	}
+	.fixed-table-head {
+		z-index: 999;
+		width: 141px;
+		float: left;
+		border-top: 1px solid #f1f1f1;
+		@include head;
+		.fiexed-head-item {
+			@include td;
+		}
+	}
+	.rank {
+		width: 60px !important;
+		text-align: center !important;
+	}
+	.team {
+		width: 80px !important;
+		border-right: 1px solid #f1f1f1;
+	}
+	.table {
+		white-space: nowrap;
+		margin-left: 141px;
+		width: calc(100% - 141px);
+		position: absolute;
+		top: 0;
+		.table-content {
+			&:nth-of-type(1) {
+				.content-item {
+					margin-top: 52px;
+				}
+			}
+			.content-item {
+				@include td;
+				&.win-rate {
+					line-height: normal !important;
+				}
+				.victory {
+					height: $height;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					.bar {
+						width: 80px;
+						height: 8px;
+						margin-top: 3px;
+						.full {
+							height: inherit;
+							background-color: #e3e5e6;
+							border-radius: 30px;
+							position: relative;
+							border-radius: 30px;
+						}
+						.win {
+							width: 30%;
+							height: inherit;
+							background: #0c9dfc;
+							height: inherit;
+							border-radius: 30px;
+						}
+					}
+				}
+				.kda-box {
+					height: $height;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					.value {
+						color: #0c9dfc;
+						font-weight: bold;
+					}
+					.detail {
+						color: #999fad;
+						font-size: 12px;
+						font-style: italic;
+					}
+				}
+			}
+			&:nth-of-type(2n + 1) {
+				.content-item {
+					background-color: #fafbfc;
+				}
+			}
+		}
+	}
+	.fixed-table {
+		position: absolute;
+		top: 0px;
+		width: 141px;
+		box-sizing: border-box;
+		.fixed-table-content {
+			&:nth-of-type(1) {
+				.fixed-content-item {
+					margin-top: 52px;
+				}
+			}
+			&:nth-of-type(2n + 1) {
+				.fixed-content-item {
+					background-color: #fafbfc;
+				}
+			}
+			.fixed-content-item {
+				@include td;
+				text-align: left;
+				image {
+					width: 25px;
+					height: 25px;
+					vertical-align: middle;
+					padding-right: 5px;
+				}
+				text {
+					vertical-align: middle;
+				}
+			}
+		}
 	}
 }
 uni-button[type='default'],

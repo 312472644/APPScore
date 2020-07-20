@@ -21,37 +21,39 @@
 			</view>
 		</view>
 		<view class="match">
-			<view class="match-info" v-for="(item, index) in matchList" :key="index">
-				<view class="match-date">
-					<text>{{ item.matchDateText }}</text>
-					<text class="current-day" v-if="new Date().Format('yyyy-MM-dd') == item.matchDateValue">今天</text>
-					<text class="week" v-else>{{ item.week }}</text>
-				</view>
-				<view class="match-name" v-if="item.tournamentinfo">
-					<image class="filter-image" :src="item.tournamentinfo.image_thumb"></image>
-					<text>{{ item.tournamentinfo.name }}</text>
-				</view>
-				<!--没有数据-->
-				<view class="no-match" v-else><text>当日无比赛</text></view>
-				<!--队伍详情-->
-				<view class="match-team-box">
-					<view class="match-team" v-for="team in item.list" :key="item.dynamic_id">
-						<view class="time">{{ team.start_time }}</view>
-						<view class="team-info">
-							<text class="team-name">{{ team.team_a_short_name }}</text>
-							<image class="filter-image" :src="team.team_a_image"></image>
-							<view class="match-result" v-if="team.status == 2">
-								<text :class="team.team_a_win == '2' ? 'win' : 'lose'">{{ team.team_a_win }}</text>
-								<text class="character">:</text>
-								<text :class="team.team_b_win == '2' ? 'win' : 'lose'">{{ team.team_b_win }}</text>
+			<pulldown ref="pulldown" @pull="pulldown">
+				<view class="match-info" v-for="(item, index) in matchList" :key="index">
+					<view class="match-date">
+						<text>{{ item.matchDateText }}</text>
+						<text class="current-day" v-if="new Date().Format('yyyy-MM-dd') == item.matchDateValue">今天</text>
+						<text class="week" v-else>{{ item.week }}</text>
+					</view>
+					<view class="match-name" v-if="item.tournamentinfo">
+						<image class="filter-image" :src="item.tournamentinfo.image_thumb"></image>
+						<text>{{ item.tournamentinfo.name }}</text>
+					</view>
+					<!--没有数据-->
+					<view class="no-match" v-else><text>当日无比赛</text></view>
+					<!--队伍详情-->
+					<view class="match-team-box">
+						<view class="match-team" v-for="team in item.list" :key="item.dynamic_id">
+							<view class="time">{{ team.start_time }}</view>
+							<view class="team-info">
+								<text class="team-name">{{ team.team_a_short_name }}</text>
+								<image class="filter-image" :src="team.team_a_image"></image>
+								<view class="match-result" v-if="team.status == 2">
+									<text :class="team.team_a_win == '2' ? 'win' : 'lose'">{{ team.team_a_win }}</text>
+									<text class="character">:</text>
+									<text :class="team.team_b_win == '2' ? 'win' : 'lose'">{{ team.team_b_win }}</text>
+								</view>
+								<text class="vs" v-else>VS</text>
+								<image class="filter-image" :src="team.team_b_image"></image>
+								<text class="team-name align-left">{{ team.team_b_short_name }}</text>
 							</view>
-							<text class="vs" v-else>VS</text>
-							<image class="filter-image" :src="team.team_b_image"></image>
-							<text class="team-name align-left">{{ team.team_b_short_name }}</text>
 						</view>
 					</view>
 				</view>
-			</view>
+			</pulldown>
 		</view>
 	</view>
 </template>
@@ -78,6 +80,9 @@ export default {
 		this.getMatchType();
 	},
 	methods: {
+		pulldown(){
+			this.getMatchList();
+		},
 		showFilterMode() {
 			this.$emit('update:isFilterMode', false);
 		},
@@ -163,7 +168,7 @@ export default {
 					for (let dateProp in matchResult) {
 						let obj = {};
 						//需要转化日期(2020.6.14转化2020-06-14)
-						let date = new Date(dateProp.toString().replace(/\./g,'-'));
+						let date = new Date(dateProp.toString().replace(/\./g, '-'));
 						obj.matchDateValue = date.Format('yyyy-MM-dd');
 						obj.matchDateText = date.Format('MM.dd');
 						obj.week = date.GetWeek();
@@ -179,8 +184,8 @@ export default {
 						matchList.push(obj);
 					}
 					this.matchList = matchList;
-					//console.debug('matchList', matchList);
 					this.showFilterMode();
+					this.$refs.pulldown.stopLoad();
 				}
 			});
 		}
