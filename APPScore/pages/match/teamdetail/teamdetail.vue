@@ -103,29 +103,74 @@
 		<!--未来比赛-->
 		<card title="未来6场比赛">
 			<view class="match-item-box" v-if="teamResult.future_match_list && teamResult.future_match_list.length">
-				<view class="match-item">
+				<view class="match-item" v-for="(item, index) in teamResult.future_match_list" :key="item.matchID">
 					<view class="match-title">
-						<image src="https://img1.famulei.com/z/2373870/p/206/0218594187287.png?x-oss-process=image/resize,m_fill,w_24,h_24"></image>
-						<text class="text">2020 LPL夏季赛-常规赛 08-09 19:00</text>
+						<image :src="item.tournament_image"></image>
+						<text class="text">{{ item.title }}</text>
 					</view>
 					<view class="match-team-box">
 						<view class="match-score-box">
 							<view class="team-info-box">
 								<view class="team">
-									<image src="https://img1.famulei.com/z/2373870/p/201/0815380694212_100X100.png?x-oss-process=image/resize,m_fill,w_24,h_24"></image>
-									<text>IG</text>
+									<image :src="item.team_a_image_thumb"></image>
+									<text>{{ item.team_a_short_name }}</text>
 								</view>
 								<view class="score">
 									<view class="score-result">
-										<view class="game-bg">
-											<text></text>
-											<text></text>
-											<text></text>
-										</view>
+										<view class="game-bg"><text v-for="(t, index) in Number(item.game_count)" :key="index"></text></view>
 									</view>
+									<view class="match-result">0</view>
 								</view>
 							</view>
-							<view class="team-info-box"></view>
+							<view class="team-info-box">
+								<view class="team">
+									<image :src="item.team_b_image_thumb"></image>
+									<text>{{ item.team_b_short_name }}</text>
+								</view>
+								<view class="score">
+									<view class="score-result">
+										<view class="game-bg"><text v-for="(item, index) in Number(item.game_count)" :key="index"></text></view>
+									</view>
+									<view class="match-result">0</view>
+								</view>
+							</view>
+						</view>
+						<view class="match-detail"><text>查看详情</text></view>
+					</view>
+				</view>
+			</view>
+			<view class="no-record" v-else><text>暂无数据</text></view>
+		</card>
+		<splitline></splitline>
+		<!--比赛记录-->
+		<card title="比赛记录">
+			<view class="match-item-box" v-if="matchList.list">
+				<view class="match-item" v-for="(item, index) in matchList.list" :key="item.match.matchID">
+					<view class="match-title">
+						<text :class="{ win: true, lose: item.winTeamId != teamID }">胜利</text>
+						<text class="text">{{ item.match.tournament_name }}</text>
+						<text class="text">{{ item.match.start_time_string }}</text>
+					</view>
+					<view class="match-team-box">
+						<view class="match-score-box">
+							<view class="team-info-box">
+								<view class="team">
+									<image :src="item.match.team_a_image_thumb"></image>
+									<text>{{ item.match.team_a_short_name }}</text>
+								</view>
+								<view class="score">
+									<view :class="{ 'match-result': true, win: Number(item.match.team_a_win) > Number(item.match.team_b_win) }">{{ item.match.team_a_win }}</view>
+								</view>
+							</view>
+							<view class="team-info-box">
+								<view class="team">
+									<image :src="item.match.team_b_image_thumb"></image>
+									<text>{{ item.match.team_b_short_name }}</text>
+								</view>
+								<view class="score">
+									<view :class="{ 'match-result': true, win: Number(item.match.team_b_win) > Number(item.match.team_a_win) }">{{ item.match.team_b_win }}</view>
+								</view>
+							</view>
 						</view>
 						<view class="match-detail"><text>查看详情</text></view>
 					</view>
@@ -146,13 +191,15 @@ export default {
 		return {
 			teamID: '',
 			teamResult: {},
-			seriesData: {}
+			seriesData: {},
+			matchList: {}
 		};
 	},
 	onLoad(param) {
 		if (param) {
 			this.teamID = param.teamID;
 			this.getTeamDetail();
+			this.getMatchList();
 		}
 	},
 	methods: {
@@ -184,7 +231,39 @@ export default {
 							}
 						]
 					};
-					console.log(this.teamResult);
+				}
+			});
+		},
+		getMatchList() {
+			uni.request({
+				url: 'https://www.scoregg.com/services/api_url.php',
+				method: 'POST',
+				header: {
+					'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				data: {
+					api_path: '/services/gamingDatabase/team.php',
+					method: 'post',
+					platform: 'web',
+					api_version: '9.9.9',
+					language_id: 1,
+					act: 'match',
+					limit: 5,
+					teamID: this.teamID,
+					year: 2020,
+					tournamentID: '',
+					vsteamID: ''
+				},
+				success: res => {
+					let result = res.data.data;
+					if (result) {
+						result.list.forEach(t => {
+							t.winTeamId = t.results[t.results.length - 1].win_teamID;
+						});
+					}
+					console.log(result);
+					this.matchList = result;
+					//console.log(this.matchList);
 				}
 			});
 		}
@@ -376,6 +455,9 @@ export default {
 			padding: 12px 0 14px 12px;
 			border-radius: 5px;
 			border: 1px solid #f0f1f2;
+			&:not(:nth-last-of-type(1)) {
+				margin-bottom: 12px;
+			}
 			.match-title {
 				display: flex;
 				align-items: center;
@@ -383,6 +465,20 @@ export default {
 					width: 24px;
 					height: 24px;
 					vertical-align: middle;
+				}
+				.base-result {
+					border-radius: 30px;
+					padding: 3px 10px;
+					color: #fff;
+					font-size: 12px;
+				}
+				.win {
+					@extend .base-result;
+					background: #11abfb;
+				}
+				.lose {
+					@extend .base-result;
+					background: #d3d4d9;
 				}
 				.text {
 					padding-left: 5px;
@@ -393,9 +489,12 @@ export default {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				padding: 10px 0;
+				padding: 10px 0 0 0;
 				.match-score-box {
 					width: calc(100% - 90px);
+					display: flex;
+					flex-direction: column;
+					border-right: 1px solid #d8d8d8;
 					.team-info-box {
 						display: flex;
 						justify-content: space-between;
@@ -413,11 +512,12 @@ export default {
 							}
 						}
 						.score {
+							display: flex;
 							.score-result {
-								border-radius: 6px;
+								border-radius: 10px;
 								background-color: #f5f6f7;
 								.game-bg {
-									padding: 0 12px;
+									padding: 2px 12px;
 									height: 15px;
 									background: #f7f8fa;
 									border-radius: 8px;
@@ -435,6 +535,14 @@ export default {
 									}
 								}
 							}
+							.match-result {
+								font-size: 15px;
+								color: #999;
+								padding-left: 10px;
+								&.win {
+									color: #11abfb;
+								}
+							}
 						}
 					}
 				}
@@ -443,7 +551,6 @@ export default {
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					border-left: 1px solid #d8d8d8;
 					padding: 0 10px;
 					text {
 						border-radius: 30px;
